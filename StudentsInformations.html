@@ -1,0 +1,380 @@
+<html>
+    <head>
+        <title>students informations</title>
+
+        
+        <style>
+            *{
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                text-align: center;
+               
+            }
+            body{
+                background-color:bisque;
+                
+            }
+            table{
+                text-align: center;
+                margin: auto;
+                font-size: medium;
+            }
+            #student_table{
+                border-radius:50px;
+                text-align: center;
+                margin: auto;
+                
+                width: 90%;
+                
+
+
+            }
+            
+            input{
+                border: 3px solid black;
+                border-radius: 45px;
+                border-style: double;
+                border-width: thick;
+                margin-top: -12px;
+                width: 5cm;
+                
+            }
+            input:hover{
+                background-color: rgb(179, 177, 177);
+            }
+
+            th{
+                border-collapse: collapse;
+                margin: 60%;
+                
+                border-bottom :10px solid;
+                
+                
+                
+                color: rgb(51, 1, 1);
+                
+            }
+
+            td{
+                border: 3px solid black;
+                
+               
+            }
+            td:hover{ background-color:  rgba(236, 203, 16, 0.623);}
+
+            tr{
+                border: 3px solid black;
+            }
+            tr:hover {background-color: rgba(242, 253, 88, 0.705);}
+
+
+            
+
+            #add_information{
+            width: 150px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            }
+            #edit{
+                width: 150px;
+                margin-top: 30px;
+                margin-bottom: 30px;
+                
+            }
+            #add_information:hover {
+                background-color: black;
+                color: white;
+            }
+            #edit:hover {
+                background-color: black;
+                color: white;
+            }
+            
+
+            #delbtn{
+              
+                width: auto;
+                text-align: left;
+                border: 1px solid black;
+                color: black;
+                background-color: white;
+                margin-top: auto;
+                font-size: larger;
+                background-color:bisque;
+            }
+            #up{
+                width: auto;
+                text-align: right;
+                border: 1px solid black;
+                color: black;
+                background-color: white;
+                margin-top: auto;
+                font-size: larger;
+                background-color:bisque;
+            }
+            #delbtn:hover{
+                background-color: maroon;
+            }
+            #up:hover{
+                background-color: green;
+            }
+            
+            
+            
+            
+        </style>
+    
+
+    </head>
+    <body>
+    <div>
+    <form id="stinfo">
+        <H1 style="text-align: center;">Students informations</H1>
+        
+            
+            <h3>first name : </h3>
+            <input type="text" id="fname" required><br>
+        
+    
+            <h3>last name : </h3>
+            <input type="text" id="lname" required><br>
+        
+        
+            <h3>date of birth : </h3>
+            <input type="date" id="birth" required><br>
+        
+            <h3>student number : </h3>
+            <input type="number" id="stnum"  ><br>
+        
+    
+            <h3>university : </h3>
+            <input type="text" id="uni" required><br>
+        
+           <h3>major : </h3>
+            <input type="text" id="major" required onkeydown="enter()" ><br>
+        
+            
+            <input type="button"   id="add_information" value="add information" /><br>
+            <input type="button" id="edit" value="edit information" style="display: none;"/><br>
+            <div>
+        </div>
+        <input type="number" placeholder="enter your student number" id="inpt" oninput="search()"><br>
+        </div>
+    </form>
+    <form>
+        <div id="div">
+        <table id="student_table">
+
+        </table>
+    </div>
+    </form>
+
+
+    <script>
+       
+    
+    const div = document.getElementById("div")
+    const add = document.getElementById("add_information")
+    
+        
+
+       
+            display()
+    add.addEventListener("click" , ()=>{
+        if (!(document.getElementById("fname").value && document.getElementById('lname').value && document.getElementById('birth').value &&
+        document.getElementById('stnum').value && document.getElementById('uni').value && document.getElementById('major').value) ){
+            alert("error!")
+        }else{
+
+            const xhr = new XMLHttpRequest()
+            xhr.open("POST" , "/students" , true)
+            xhr.setRequestHeader("Content-Type" , "application/json")
+            xhr.send(JSON.stringify({
+                fname : document.getElementById('fname').value,
+                lname : document.getElementById('lname').value,
+                birth : document.getElementById('birth').value,
+                stnum : Number(document.getElementById('stnum').value) ,
+                uni   : document.getElementById('uni').value,
+                major : document.getElementById('major').value
+            
+
+        }))
+        display()
+
+        document.getElementById("fname").value = "";
+        document.getElementById("lname").value = "";
+        document.getElementById("birth").value = "";
+        document.getElementById("stnum").value = "";
+        document.getElementById("uni").value   = "";
+        document.getElementById("major").value = "";
+     }
+    })
+     function display(){ 
+        const xhr = new XMLHttpRequest()
+        xhr.open("GET" , "/students" , true)
+        xhr.onload = ()=>{
+            const students = Array.from(JSON.parse(xhr.responseText)) 
+            const table = document.getElementsByTagName("table")[0]
+            table.remove()
+            const new_table = document.createElement("table")
+            div.appendChild(new_table)
+            const tr = document.createElement("tr")
+            new_table.appendChild(tr)
+            const th0 = document.createElement("th")
+            const th1 = document.createElement("th")
+            const th2 = document.createElement("th")
+            const th3 = document.createElement("th")
+            const th4 = document.createElement("th")
+            const th5 = document.createElement("th")
+            const th6 = document.createElement("th")
+            th0.textContent = 'First Name'
+            th1.textContent = "Last Name"
+            th2.textContent = "Date of birth"
+            th3.textContent = "Student Number"
+            th4.textContent = "University"
+            th5.textContent = "Major"
+            th6.textContent = "Action"
+
+
+
+
+
+            tr.appendChild(th0)
+            tr.appendChild(th1)
+            tr.appendChild(th2)
+            tr.appendChild(th3)
+            tr.appendChild(th4)
+            tr.appendChild(th5)
+            tr.appendChild(th6)
+
+            for(let i = 0 ; i<students.length ; i++){
+                const tr = document.createElement("tr")
+                new_table.appendChild(tr)
+                const td0 = document.createElement("td")    
+                const td1 = document.createElement("td")
+                const td2 = document.createElement("td")
+                const td3 = document.createElement("td")
+                const td4 = document.createElement("td")
+                const td5 = document.createElement("td")
+                const td6 = document.createElement("td")
+                tr.appendChild(td0)
+                tr.appendChild(td1)
+                tr.appendChild(td2)
+                tr.appendChild(td3)
+                tr.appendChild(td4)
+                tr.appendChild(td5)
+                tr.appendChild(td6)
+                td0.textContent = students[i].fname
+                td1.textContent = students[i].lname
+                td2.textContent = students[i].birth
+                td3.textContent = students[i].stnum
+                td4.textContent = students[i].uni
+                td5.textContent = students[i].major
+                const update = document.createElement("input")
+                update.type = "button"
+                update.id="up"
+                update.value="EDIT"
+                update.dataset.index = i + 1
+                td6.appendChild(update)
+                update.addEventListener("click" , ()=>{
+                    const row = update.dataset.index
+                    const table = div.getElementsByTagName("table")[0]
+                    const tr = table.getElementsByTagName("tr")[row]
+                    const td = tr.getElementsByTagName("td")[3].textContent
+                    const xhr = new XMLHttpRequest()
+                    xhr.open("GET" , `/students/${td}` , true)
+                    xhr.onload = ()=>{
+                        const student = JSON.parse(xhr.responseText)
+                        document.getElementById("fname").value = student.fname
+                        document.getElementById("lname").value = student.lname
+                        document.getElementById("birth").value = student.birth
+                        document.getElementById("stnum").value = student.stnum
+                        document.getElementById("uni").value = student.uni
+                        document.getElementById("major").value = student.major
+
+                        add.style.display = 'none'
+                        const edit = document.getElementById("edit")
+                        edit.style.display = ''
+                        edit.addEventListener("click" , ()=>{
+                            if (!(document.getElementById("fname").value && document.getElementById('lname').value && document.getElementById('birth').value &&
+        document.getElementById('stnum').value && document.getElementById('uni').value && document.getElementById('major').value) ){
+            alert("error!")
+        }else{
+                            const xhr = new XMLHttpRequest()
+                            xhr.open("PUT" , `/students/${Number(td)}` , true )
+                            xhr.setRequestHeader("Content-Type" , "application/json")
+                            xhr.send(JSON.stringify({
+                            fname : document.getElementById('fname').value,
+                            lname : document.getElementById('lname').value,
+                            birth : document.getElementById('birth').value,
+                            stnum : Number(document.getElementById('stnum').value) ,
+                            uni   : document.getElementById('uni').value,
+                            major : document.getElementById('major').value
+            
+
+                            
+
+                            }))
+                        display()
+                            document.getElementById("fname").value = "";
+                            document.getElementById("lname").value = "";
+                            document.getElementById("birth").value = "";
+                            document.getElementById("stnum").value = "";
+                            document.getElementById("uni").value   = "";
+                            document.getElementById("major").value = "";
+                        }
+                        })
+                    }
+                    xhr.send()
+                })
+                const delbtn = document.createElement("input")
+                delbtn.type = "button"
+                delbtn.id="delbtn"
+                delbtn.value="DELETE"
+                delbtn.dataset.index = i + 1
+                td6.appendChild(delbtn)
+                delbtn.addEventListener("click" , ()=>{
+                    const row = delbtn.dataset.index
+                    const table = div.getElementsByTagName("table")[0]
+                    const tr = table.getElementsByTagName("tr")[row]
+                    const td = tr.getElementsByTagName("td")[3].textContent
+                    const xhr = new XMLHttpRequest()
+                    xhr.open("DELETE" , `/students/${Number(td)}` , true)
+                    xhr.send()
+                    display()
+                    
+                })
+
+                
+            }
+            
+        }
+        xhr.send()
+     }
+    
+     function search(){
+            var value = document.getElementById('inpt').value
+            var table = document.getElementsByTagName("table")[0]
+            var tr = table.getElementsByTagName("tr")
+
+            for (var i = 1 ; i<tr.length ; i++){
+                
+                
+                var td = tr[i].getElementsByTagName('td')[3]
+                if(td){
+                    
+                    if(td.innerHTML.indexOf(value)==0){
+                        tr[i].style.display = ''
+                    }else{
+                        tr[i].style.display ='none'
+                    }
+                }
+            }
+           
+    }
+     
+    
+           
+    </script>
+        
+    </body>
+</html>
